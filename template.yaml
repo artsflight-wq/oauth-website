@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: YELL OAuth Lambda - Discord OAuth2 handler
+
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: python3.11
+    MemorySize: 256
+
+Resources:
+  OAuthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: yell-oauth
+      CodeUri: .
+      Handler: lambda_oauth.lambda_handler
+      Description: Discord OAuth2 callback handler
+      Events:
+        Callback:
+          Type: Api
+          Properties:
+            Path: /callback
+            Method: GET
+        Error:
+          Type: Api
+          Properties:
+            Path: /error
+            Method: GET
+        Health:
+          Type: Api
+          Properties:
+            Path: /health
+            Method: GET
+        OAuthUrl:
+          Type: Api
+          Properties:
+            Path: /oauth-url
+            Method: GET
+
+Outputs:
+  OAuthApiUrl:
+    Description: Base API URL
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
+
+  CallbackUrl:
+    Description: OAuth Redirect URL for Discord Developer Portal
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/callback"
+
+  OAuthFunctionArn:
+    Description: Lambda Function ARN
+    Value: !GetAtt OAuthFunction.Arn
