@@ -5,7 +5,7 @@ Description: YELL OAuth Lambda - Discord OAuth2 handler
 Globals:
   Function:
     Timeout: 30
-    Runtime: python3.11
+    Runtime: python3.10
     MemorySize: 256
 
 Resources:
